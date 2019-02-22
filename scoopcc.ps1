@@ -1,19 +1,27 @@
 
-if("$env:SCOOP" -eq "") {
-    echo("There is no `$env:SCOOP, exiting!")
-    return
+if([String]::IsNullOrEmpty($env:SCOOP))
+{
+    Write-Error 'There is no $env:SCOOP.'
+    Exit 1
 }
 
-$cache_dir="$env:SCOOP\cache"
-
-$hasChange=""
-
-foreach($file in dir $cache_dir)
+$cacheDir=Join-Path $env:SCOOP cache
+if(!(Test-Path $cacheDir -PathType Container))
 {
-    # delete temp file
+    Write-Error "Cache dir[$cacheDir] not exist."
+    Exit 1
+}
+
+# delete temp file
+Remove-Item (Join-Path $cacheDir *.txt) -Force
+Remove-Item (Join-Path $cacheDir *.aria2) -Force
+
+$hasChange=$false
+foreach($file in dir $cacheDir -File)
+{
+    # skip temp files(deleted failed)
     if($file.Extension -eq ".aria2" -or $file.Extension -eq ".txt") {
-        Remove-Item $file.FullName -Force
-        echo("[temp file] " + $file.FullName + " deleted")
+        Write-Warning "Temp file[$txt] deleted failed."
         continue
     }
 
@@ -22,14 +30,14 @@ foreach($file in dir $cache_dir)
     $currentAppVer=$currentAppArray[1]
     if($currentAppName -eq $preAppName) {
         Remove-Item $preApp.FullName -Force
-        echo("[old version] $currentAppName@$currentAppVer deleted")
-        $hasChange="true"
+        Write-Host "[old version] $currentAppName@$currentAppVer deleted" -ForegroundColor Yellow
+        $hasChange=$true
     }
     
     $preAppName=$currentAppName
     $preApp=$file
 }
 
-if($hasChange -ne "true") {
-    echo("No change")
+if(!$hasChange) {
+    Write-Host "No change" -ForegroundColor Green
 }
