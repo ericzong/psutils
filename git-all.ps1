@@ -1,10 +1,10 @@
 
 param(
-    [Parameter(Mandatory=$true, Position=1)]
-    $dir=".",
-    [Parameter(Mandatory=$true, Position=0)]
+    [Parameter(Position=0)]
     [ValidateScript({$_ -eq "pull" -or $_ -eq "push"})]
-    $type="pull"
+    $type="pull",
+    [Parameter(Position=1)]
+    $dir="."
 )
 
 $dir=Resolve-Path $dir
