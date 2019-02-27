@@ -1,0 +1,88 @@
+@charset "UTF-8";
+
+@media print {
+@page {
+  margin: 5mm;
+  padding: 0;
+  margin: 0;
+  /* size: A4 landscape; */
+  @bottom-center {
+    content: counter(page)
+  }
+}
+
+  #write {
+    padding: 5px;
+	margin: 0;
+	max-width: 100%;
+  }
+  
+  #write>*:first-child {
+    margin-top: 10px;
+  }
+  
+  #write>*:last-child {
+    margin-bottom: 10px;
+  }
+
+  /* 背景 */
+  html, body {
+    background: white;
+  }
+  /* 字体 */
+  html {
+    font-size: 10px;
+  }
+  
+  body {
+	line-height: 1.25rem !important;
+  }
+  
+  p {
+	line-height: 1.25rem !important;
+  }
+  
+  content {
+	line-height: 1rem !important;
+  }
+  
+  h1 {
+    font-size: 1.2rem !important;
+  }
+  
+  h2 {
+    font-size: 1.1rem !important;
+  }
+  
+  h3, h4, h5, h6 {
+    font-size: 1rem !important;
+  }
+  
+  h1, h2, h3 {
+    page-break-after: avoid;
+  }
+  
+  h1+* {
+    page-break-before: avoid;
+  }
+  
+  table {
+    page-break-before: avoid;
+  }
+  
+  th, td {
+    padding: 1px 5px;
+  }
+  
+  hr {
+    display: none;
+  }
+  
+  pre.md-fences {
+    padding: 0;
+  }
+  
+  a[href^="http"]:after {
+    content: "(" attr(href) ")";
+  }
+}
