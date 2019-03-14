@@ -1,4 +1,4 @@
-
+#v1.0.0
 param(
     [Parameter(Position=0)]
     [ValidateScript({$_ -eq "pull" -or $_ -eq "push"})]

@@ -1,4 +1,4 @@
-
+#v1.0.0
 if([String]::IsNullOrEmpty($env:SCOOP))
 {
     Write-Error 'There is no $env:SCOOP.'
