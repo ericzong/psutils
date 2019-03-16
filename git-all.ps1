@@ -1,4 +1,4 @@
-#v1.0.0
+#v1.0.1
 param(
     [Parameter(Position=0)]
     [ValidateScript({$_ -eq "pull" -or $_ -eq "push"})]
@@ -35,3 +35,5 @@ foreach($d in dir $dir -Directory)
         git.exe push --progress
     }
 }
+
+cd $dir
