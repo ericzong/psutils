@@ -1,4 +1,16 @@
-#v1.0.1
+#v1.0.2
+<#
+.Synopsis
+    Batch operate the Git repositories under the specified folder
+.DESCRIPTION
+    Pull/Push all Git repositories under one folder
+.EXAMPLE
+    git-all
+.EXAMPLE
+    git-all push
+.EXAMPLE
+    git-all pull D:\parent\of\git\dirs
+#>
 param(
     [Parameter(Position=0)]
     [ValidateScript({$_ -eq "pull" -or $_ -eq "push"})]
