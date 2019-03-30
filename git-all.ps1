@@ -1,4 +1,4 @@
-#v1.0.3
+#v1.0.4
 <#
 .Synopsis
     Batch operate the Git repositories under the specified folder
@@ -28,6 +28,7 @@ if(-not (Test-Path $dir))
     Exit 1
 }
 
+$ErrorActionPreference='stop'
 Trap { cd $currentPath }
 
 foreach($d in dir $dir -Directory)
