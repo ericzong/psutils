@@ -1,4 +1,4 @@
-#v1.0.2
+#v1.0.3
 <#
 .Synopsis
     Batch operate the Git repositories under the specified folder
@@ -14,11 +14,12 @@
 param(
     [Parameter(Position=0)]
     [ValidateScript({$_ -eq "pull" -or $_ -eq "push"})]
-    $type="pull",
+    [string]$type="pull",
     [Parameter(Position=1)]
-    $dir="."
+    [string]$dir="."
 )
 
+$currentPath=$PSScriptRoot
 $dir=Resolve-Path $dir
 
 if(-not (Test-Path $dir))
@@ -26,6 +27,8 @@ if(-not (Test-Path $dir))
     Write-Error $dir "is not exist."
     Exit 1
 }
+
+Trap { cd $currentPath }
 
 foreach($d in dir $dir -Directory)
 {
@@ -48,4 +51,4 @@ foreach($d in dir $dir -Directory)
     }
 }
 
-cd $dir
+cd $currentPath
