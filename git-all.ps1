@@ -19,7 +19,7 @@ param(
     [string]$dir="."
 )
 
-$currentPath=$PSScriptRoot
+$currentPath=$PWD
 $dir=Resolve-Path $dir
 
 if(-not (Test-Path $dir))
