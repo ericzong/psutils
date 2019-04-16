@@ -1,4 +1,4 @@
-#v1.1.0
+#v1.1.1
 <#
 .Synopsis
     Batch operate the Git repositories under the specified folder
@@ -22,6 +22,32 @@ param(
     [string[]]$include,
     [string[]]$exclude
 )
+
+function matchArray([string]$name, [string[]]$array)
+{
+    foreach($i in $array)
+    {
+        if($name -match $i)
+        {
+            return $true
+        }
+    }
+}
+
+function isInclude([string]$name, [string[]]$include, [string[]]$exclude) 
+{
+    if($exclude -and (matchArray $name $exclude))
+    {
+        return $false
+    }
+
+    if($include -and !(matchArray $name $include))
+    {
+        return $false
+    }
+
+    return $true
+}
 
 $currentPath=$PWD
 $dir=Resolve-Path $dir
@@ -67,29 +93,3 @@ foreach($d in dir $dir -Directory)
 }
 
 cd $currentPath
-
-function matchArray([string]$name, [string[]]$array)
-{
-    foreach($i in $array)
-    {
-        if($name -match $i)
-        {
-            return $true
-        }
-    }
-}
-
-function isInclude([string]$name, [string[]]$include, [string[]]$exclude) 
-{
-    if($exclude -and (matchArray $name $exclude))
-    {
-        return $false
-    }
-
-    if($include -and !(matchArray $name $include))
-    {
-        return $false
-    }
-
-    return $true
-}
