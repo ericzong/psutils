@@ -1,4 +1,4 @@
-#v1.1.2
+#v1.1.3
 <#
 .SYNOPSIS
 Batch operate the Git repositories under the specified folder
@@ -91,8 +91,13 @@ foreach($d in dir $dir -Directory)
     }
 
     cd $d.FullName
-    Write-Host "$type project $($d.Name)..."
-    git.exe $type --progress
+    $text = (git.exe $type --progress)
+    if($text) {
+        Write-Host '------------------------------'
+        Write-Host "$type project $($d.Name)"
+        Write-Host $text
+        Write-Host '------------------------------'
+    }
 }
 
 cd $currentPath
