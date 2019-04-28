@@ -1,21 +1,32 @@
-#v1.1.1
+#v1.1.2
 <#
-.Synopsis
-    Batch operate the Git repositories under the specified folder
+.SYNOPSIS
+Batch operate the Git repositories under the specified folder
 .DESCRIPTION
-    Pull/Push all Git repositories under one folder
+Pull/Push all Git repositories under one folder
+.PARAMETER type
+Git command. Git pull/push supported. Default: pull.
+.PARAMETER dir
+The root directory. 
+All of sub-directories execute git command while it is the root of a git project. 
+Default: active directory.
+.PARAMETER include
+The pattern of include directories.
+.PARAMETER exclude
+Then pattern of exclude directories.
 .EXAMPLE
-    git-all
+git-all
 .EXAMPLE
-    git-all push
+git-all push
 .EXAMPLE
-    git-all pull D:\parent\of\git\dirs
+git-all pull D:\parent\of\git\dirs
 .EXAMPLE
-    git-all -include test.* -exclude pro.*
+git-all -include test.* -exclude pro.*
 #>
+[CmdletBinding()]
 param(
     [Parameter(Position=0)]
-    [ValidateScript({$_ -eq "pull" -or $_ -eq "push"})]
+    [ValidateSet('pull', 'push')]
     [string]$type="pull",
     [Parameter(Position=1)]
     [string]$dir=".",
@@ -69,7 +80,7 @@ foreach($d in dir $dir -Directory)
 {
     if(-not (Test-Path (Join-Path $d.FullName ".git")))
     {
-        Write-Warning ("Skip non-git project $($d.Name)...")
+        Write-Verbose ("Skip non-git project $($d.Name)...")
         continue
     }
 
@@ -80,16 +91,8 @@ foreach($d in dir $dir -Directory)
     }
 
     cd $d.FullName
-    if($type -eq "pull")
-    {
-        Write-Host "Updating project $($d.Name)..."
-        git.exe pull --progress
-    }
-    else
-    {
-        Write-Host "Push project $($d.Name)..."
-        git.exe push --progress
-    }
+    Write-Host "$type project $($d.Name)..."
+    git.exe $type --progress
 }
 
 cd $currentPath
