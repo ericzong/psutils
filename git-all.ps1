@@ -1,4 +1,4 @@
-#v1.1.3
+#v1.1.4
 <#
 .SYNOPSIS
 Batch operate the Git repositories under the specified folder
@@ -92,11 +92,13 @@ foreach($d in dir $dir -Directory)
 
     cd $d.FullName
     $text = (git.exe $type --progress)
-    if($text) {
+    if(($text -ne 'Already up to date.') -and ($text -ne 'Everything up-to-date')) {
         Write-Host '------------------------------'
-        Write-Host "$type project $($d.Name)"
+        Write-Host "$type project $($d.Name): "
         Write-Host $text
-        Write-Host '------------------------------'
+    } else {
+        Write-Verbose '------------------------------'
+        Write-Verbose "project $($d.Name) up to date"
     }
 }
 
