@@ -1,4 +1,10 @@
-#v1.0.0
+#v1.0.1
+<#
+.SYNOPSIS
+Scoop cache clear tool.
+.DESCRIPTION
+Clear scoop caches without lastest version.
+#>
 if([String]::IsNullOrEmpty($env:SCOOP))
 {
     Write-Error 'There is no $env:SCOOP.'
@@ -12,30 +18,46 @@ if(!(Test-Path $cacheDir -PathType Container))
     Exit 1
 }
 
+# temp file extensions
+$tempExtList = $('.txt', '.aria2')
+
 # delete temp file
-Remove-Item (Join-Path $cacheDir *.txt) -Force
-Remove-Item (Join-Path $cacheDir *.aria2) -Force
+foreach($ext in $tempExtList)
+{
+    Remove-Item (Join-Path $cacheDir "*.$ext") -Force
+}
 
 $hasChange=$false
 foreach($file in dir $cacheDir -File)
 {
     # skip temp files(deleted failed)
-    if($file.Extension -eq ".aria2" -or $file.Extension -eq ".txt") {
+    if($tempExtList -contains $file.Extension) {
         Write-Warning "Temp file[$txt] deleted failed."
         continue
     }
 
-    $currentAppArray=$file.BaseName.Split("#")
+    $currentAppArray=$file.BaseName.Split("#_")
     $currentAppName=$currentAppArray[0]
     $currentAppVer=$currentAppArray[1]
     if($currentAppName -eq $preAppName) {
-        Remove-Item $preApp.FullName -Force
-        Write-Host "[old version] $currentAppName@$currentAppVer deleted" -ForegroundColor Yellow
+        $preDate = $preApp.lastWriteTime
+        $currentDate = $file.lastWriteTime
+        if($preDate -lt $currentDate)
+        {
+            Remove-Item $preApp.FullName -Force
+            Write-Warning "[old version] $preAppName@$preAppVer deleted"
+
+            $preAppVer=$currentAppVer
+            $preApp=$file
+        }
+        else
+        {
+            Remove-Item $file.FullName -Force
+            Write-Host "[old version] $currentAppName@$currentAppVer deleted"
+        }
+        
         $hasChange=$true
     }
-    
-    $preAppName=$currentAppName
-    $preApp=$file
 }
 
 if(!$hasChange) {
