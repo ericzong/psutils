@@ -1,4 +1,4 @@
-#v1.0.1
+#v1.0.2
 <#
 .SYNOPSIS
 Scoop cache clear tool.
@@ -19,7 +19,7 @@ if(!(Test-Path $cacheDir -PathType Container))
 }
 
 # temp file extensions
-$tempExtList = $('.txt', '.aria2')
+$tempExtList = $('.txt', '.aria2', '.download')
 
 # delete temp file
 foreach($ext in $tempExtList)
@@ -45,7 +45,7 @@ foreach($file in dir $cacheDir -File)
         if($preDate -lt $currentDate)
         {
             Remove-Item $preApp.FullName -Force
-            Write-Warning "[old version] $preAppName@$preAppVer deleted"
+            Write-Host "[old version] $preAppName@$preAppVer deleted"
 
             $preAppVer=$currentAppVer
             $preApp=$file
@@ -57,6 +57,10 @@ foreach($file in dir $cacheDir -File)
         }
         
         $hasChange=$true
+    } else {
+        $preApp = $file
+        $preAppName = $currentAppName
+        $preAppVer = $currentAppVer
     }
 }
 
