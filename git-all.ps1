@@ -1,4 +1,4 @@
-#v1.1.4
+#v1.2.4
 <#
 .SYNOPSIS
 Batch operate the Git repositories under the specified folder
@@ -76,6 +76,7 @@ Trap
     break
 }
 
+$operationCount=0
 foreach($d in dir $dir -Directory)
 {
     if(-not (Test-Path (Join-Path $d.FullName ".git")))
@@ -100,6 +101,11 @@ foreach($d in dir $dir -Directory)
         Write-Verbose '------------------------------'
         Write-Verbose "project $($d.Name) up to date"
     }
+    $operationCount++
+}
+if($operationCount -eq 0)
+{
+    Write-Warning "Operate no git repo"
 }
 
 cd $currentPath
