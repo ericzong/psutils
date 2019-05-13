@@ -1,4 +1,4 @@
-#v1.2.4
+#v1.2.5
 <#
 .SYNOPSIS
 Batch operate the Git repositories under the specified folder
@@ -59,6 +59,9 @@ function isInclude([string]$name, [string[]]$include, [string[]]$exclude)
 
     return $true
 }
+
+# encoding UTF-8
+$OutputEncoding = New-Object -typename System.Text.UTF8Encoding
 
 $currentPath=$PWD
 $dir=Resolve-Path $dir
