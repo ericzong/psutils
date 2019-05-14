@@ -1,4 +1,4 @@
-#v1.2.6
+#v1.2.7
 <#
 .SYNOPSIS
 Batch operate the Git repositories under the specified folder
@@ -80,7 +80,7 @@ Trap
 }
 
 $operationCount=0
-$changCount=0
+$changeCount=0
 foreach($d in dir $dir -Directory)
 {
     if(-not (Test-Path (Join-Path $d.FullName ".git")))
@@ -96,23 +96,35 @@ foreach($d in dir $dir -Directory)
     }
 
     cd $d.FullName
-    $text = (git.exe $type --progress)
-    if(($text -ne 'Already up to date.') -and ($text -ne 'Everything up-to-date')) {
-        Write-Host '------------------------------'
-        Write-Host "$type project $($d.Name): " -ForegroundColor DarkYellow
-        Write-Host $text
-        $changeCount++
-    } else {
-        Write-Verbose '------------------------------'
-        Write-Verbose "project $($d.Name) up to date"
+
+    if($type -eq 'pull') 
+    {
+        $text = (git.exe pull --progress)
+        if($text -eq 'Already up to date.')
+        {
+            Write-Verbose '------------------------------'
+            Write-Verbose "project $($d.Name) up to date"
+        }
+        else 
+        {
+            Write-Host "pull project $($d.Name): " -ForegroundColor DarkYellow
+            Write-Host $text
+            $changeCount++
+        }
+    } 
+    else 
+    {
+        Write-Host "push project $($d.Name): " -ForegroundColor DarkYellow
+        git.exe push --progress
     }
+
     $operationCount++
 }
 if($operationCount -eq 0)
 {
     Write-Warning "Operate no git repo"
 }
-else
+elseif ($type -eq 'pull')
 {
     Write-Warning "${changeCount}/${operationCount} changes"
 }
