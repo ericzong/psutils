@@ -1,4 +1,4 @@
-#v1.2.7
+#v1.2.8
 <#
 .SYNOPSIS
 Batch operate the Git repositories under the specified folder
@@ -81,6 +81,7 @@ Trap
 
 $operationCount=0
 $changeCount=0
+$errorCount=0
 foreach($d in dir $dir -Directory)
 {
     if(-not (Test-Path (Join-Path $d.FullName ".git")))
@@ -88,7 +89,6 @@ foreach($d in dir $dir -Directory)
         Write-Verbose ("Skip non-git project $($d.Name)...")
         continue
     }
-
     if(!(isInclude $d $include $exclude))
     {
         Write-Warning "Filter out $($d.Name)" 
@@ -105,16 +105,20 @@ foreach($d in dir $dir -Directory)
             Write-Verbose '------------------------------'
             Write-Verbose "project $($d.Name) up to date"
         }
+        elseif($text -like 'fatal*')
+        {
+            $errorCount++
+        }
         else 
         {
-            Write-Host "pull project $($d.Name): " -ForegroundColor DarkYellow
+            Write-Host "pull project $($d.Name) " -ForegroundColor DarkYellow
             Write-Host $text
             $changeCount++
         }
     } 
     else 
     {
-        Write-Host "push project $($d.Name): " -ForegroundColor DarkYellow
+        Write-Host "push project $($d.Name) " -ForegroundColor DarkYellow
         git.exe push --progress
     }
 
@@ -126,7 +130,7 @@ if($operationCount -eq 0)
 }
 elseif ($type -eq 'pull')
 {
-    Write-Warning "${changeCount}/${operationCount} changes"
+    Write-Warning "${changeCount}/${operationCount} changes, ${errorCount} errors"
 }
 
 cd $currentPath
