@@ -61,7 +61,8 @@ function isInclude([string]$name, [string[]]$include, [string[]]$exclude)
 }
 
 # encoding UTF-8
-$OutputEncoding = New-Object -typename System.Text.UTF8Encoding
+# $OutputEncoding = New-Object -typename System.Text.UTF8Encoding
+chcp 65001
 
 $currentPath=$PWD
 $dir=Resolve-Path $dir
@@ -112,7 +113,7 @@ foreach($d in dir $dir -Directory)
         else 
         {
             Write-Host "pull project $($d.Name) " -ForegroundColor DarkYellow
-            Write-Host $text
+            Write-Host $text -
             $changeCount++
         }
     } 
