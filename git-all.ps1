@@ -1,4 +1,4 @@
-#v1.2.8
+#v1.2.9
 <#
 .SYNOPSIS
 Batch operate the Git repositories under the specified folder
@@ -60,10 +60,6 @@ function isInclude([string]$name, [string[]]$include, [string[]]$exclude)
     return $true
 }
 
-# encoding UTF-8
-# $OutputEncoding = New-Object -typename System.Text.UTF8Encoding
-chcp 65001
-
 $currentPath=$PWD
 $dir=Resolve-Path $dir
 
@@ -85,6 +81,7 @@ $changeCount=0
 $errorCount=0
 foreach($d in dir $dir -Directory)
 {
+ 
     if(-not (Test-Path (Join-Path $d.FullName ".git")))
     {
         Write-Verbose ("Skip non-git project $($d.Name)...")
@@ -98,6 +95,8 @@ foreach($d in dir $dir -Directory)
 
     cd $d.FullName
 
+    $text = $null
+    $textBytes = $null
     if($type -eq 'pull') 
     {
         $text = (git.exe pull --progress)
@@ -112,8 +111,12 @@ foreach($d in dir $dir -Directory)
         }
         else 
         {
+            # convert to UTF8
+            $textBytes = [text.Encoding]::Default.GetBytes($text)
+            $text = [text.Encoding]::UTF8.GetString($textBytes)
+
             Write-Host "pull project $($d.Name) " -ForegroundColor DarkYellow
-            Write-Host $text -
+            Write-Host $text
             $changeCount++
         }
     } 
