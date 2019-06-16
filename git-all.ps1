@@ -1,4 +1,4 @@
-#v1.2.9
+#v1.2.10
 <#
 .SYNOPSIS
 Batch operate the Git repositories under the specified folder
@@ -109,7 +109,7 @@ foreach($d in dir $dir -Directory)
         {
             $errorCount++
         }
-        else 
+        elseif(-not [String]::IsNullOrEmpty($text))
         {
             # convert to UTF8
             $textBytes = [text.Encoding]::Default.GetBytes($text)
