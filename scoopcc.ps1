@@ -1,4 +1,4 @@
-#v1.0.2
+#v1.0.3
 <#
 .SYNOPSIS
 Scoop cache clear tool.
@@ -24,7 +24,7 @@ $tempExtList = $('.txt', '.aria2', '.download')
 # delete temp file
 foreach($ext in $tempExtList)
 {
-    Remove-Item (Join-Path $cacheDir "*.$ext") -Force
+    Remove-Item (Join-Path $cacheDir "*$ext") -Force
 }
 
 $hasChange=$false
