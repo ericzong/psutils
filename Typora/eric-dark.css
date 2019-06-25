@@ -1013,3 +1013,18 @@ html{
     /* background-color: hsla(153, 47%, 49%, 0.5) !important; */
     /* color: #fff !important; */
 /* } */
+
+/* preference */
+div#megamenu-content {
+	background: linear-gradient(to right,rgba(31,31,31,1),rgba(160,160,160,.9))
+}
+
+/* scrollbar */
+::-webkit-scrollbar {
+	width: 1rem;
+	background-color: rgba(31, 31, 31, 1);
+}
+
+::-webkit-scrollbar-thumb {
+	background: rgba(128, 128, 128, .5);
+}
