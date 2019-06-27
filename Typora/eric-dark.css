@@ -1028,3 +1028,9 @@ div#megamenu-content {
 ::-webkit-scrollbar-thumb {
 	background: rgba(128, 128, 128, .5);
 }
+
+/* search panel */
+div#md-searchpanel svg {
+	width: 1rem;
+	height: 1rem;
+}
