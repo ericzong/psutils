@@ -1033,4 +1033,8 @@ div#megamenu-content {
 div#md-searchpanel svg {
 	width: 1rem;
 	height: 1rem;
+
+/* insert table dialog */
+#table-insert-col, #table-insert-row {
+	color: #fff;
 }
