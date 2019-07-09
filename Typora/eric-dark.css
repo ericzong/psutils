@@ -1038,3 +1038,8 @@ div#md-searchpanel svg {
 #table-insert-col, #table-insert-row {
 	color: #fff;
 }
+
+/* title bar */
+#top-titlebar {
+	--text-color: white;
+}
