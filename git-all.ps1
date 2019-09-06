@@ -1,4 +1,4 @@
-#v1.2.10
+#v1.3.0
 <#
 .SYNOPSIS
 Batch operate the Git repositories under the specified folder
@@ -14,6 +14,10 @@ Default: active directory.
 The pattern of include directories.
 .PARAMETER exclude
 Then pattern of exclude directories.
+.PARAMETER inFile
+The file contains include directories.
+.PARAMETER exFile
+The file contains exclude directories.
 .EXAMPLE
 git-all
 .EXAMPLE
@@ -22,6 +26,8 @@ git-all push
 git-all pull D:\parent\of\git\dirs
 .EXAMPLE
 git-all -include test.* -exclude pro.*
+.EXAMPLE
+git-all -inFile path\to\include-file.txt -exFile path\to\exclude-file.txt
 #>
 [CmdletBinding()]
 param(
@@ -30,8 +36,10 @@ param(
     [string]$type="pull",
     [Parameter(Position=1)]
     [string]$dir=".",
-    [string[]]$include,
-    [string[]]$exclude
+    [string[]]$include = @(),
+    [string[]]$exclude = @(),
+    [string]$inFile,
+    [string]$exFile
 )
 
 function matchArray([string]$name, [string[]]$array)
@@ -74,6 +82,14 @@ Trap
 { 
     cd $currentPath
     break
+}
+
+if(-not ([String]::IsNullOrEmpty($inFile)) -and (Test-Path $inFile)) {
+    $include = $include + (Get-Content $inFile)
+}
+
+if(-not ([String]::IsNullOrEmpty($exFile)) -and (Test-Path $exFile)) {
+    $exclude = $exclude + (Get-Content $exFile)
 }
 
 $operationCount=0
