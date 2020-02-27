@@ -1,33 +1,23 @@
-#v1.3.0
+#v1.4.0
 <#
-.SYNOPSIS
-Batch operate the Git repositories under the specified folder
-.DESCRIPTION
-Pull/Push all Git repositories under one folder
-.PARAMETER type
-Git command. Git pull/push supported. Default: pull.
-.PARAMETER dir
-The root directory. 
-All of sub-directories execute git command while it is the root of a git project. 
-Default: active directory.
-.PARAMETER include
-The pattern of include directories.
-.PARAMETER exclude
-Then pattern of exclude directories.
-.PARAMETER inFile
-The file contains include directories.
-.PARAMETER exFile
-The file contains exclude directories.
-.EXAMPLE
-git-all
-.EXAMPLE
-git-all push
-.EXAMPLE
-git-all pull D:\parent\of\git\dirs
-.EXAMPLE
-git-all -include test.* -exclude pro.*
-.EXAMPLE
-git-all -inFile path\to\include-file.txt -exFile path\to\exclude-file.txt
+功能：批量操作文件夹下的 Git 库。
+参数：
+  type - Git 操作类型，pull/push，默认 pull。
+  dir - 处理的文件夹。默认为当前工作目录。
+  include - 包括的 Git 库文件夹模式。
+  exclude - 排除的 Git 库文件夹模式。
+  inFile - 包括的 Git 库列表文件。
+  exFile - 排除的 Git 库列表文件。
+  all - 是否操作所有分支。
+输出：批量操作的结果输出。
+依赖：git
+示例：
+  git-all
+  git-all push
+  git-all pull parent\of\git\dirs
+  git-all -include test.* -exclude pro.*
+  git-all -inFile path\to\include-file.txt -exFile path\to\exclude-file.txt
+  git-all push
 #>
 [CmdletBinding()]
 param(
@@ -39,7 +29,8 @@ param(
     [string[]]$include = @(),
     [string[]]$exclude = @(),
     [string]$inFile,
-    [string]$exFile
+    [string]$exFile,
+    [switch]$all
 )
 
 function matchArray([string]$name, [string[]]$array)
@@ -66,6 +57,13 @@ function isInclude([string]$name, [string[]]$include, [string[]]$exclude)
     }
 
     return $true
+}
+
+function hasBranches()
+{
+    $count = (git branch).count
+
+    return ($count -gt 1)
 }
 
 $currentPath=$PWD
@@ -111,12 +109,18 @@ foreach($d in dir $dir -Directory)
 
     cd $d.FullName
 
+    $isMultiBranch = hasBranches
     $text = $null
     $textBytes = $null
     if($type -eq 'pull') 
     {
-        $text = (git.exe pull --progress)
-        if($text -eq 'Already up to date.')
+        if($all -and $isMultiBranch) {
+            $text = (git.exe pull --all --progress)
+        } else {
+            $text = (git.exe pull --progress)
+        }
+
+        if($text -contains 'Already up to date.')
         {
             Write-Verbose '------------------------------'
             Write-Verbose "project $($d.Name) up to date"
@@ -139,7 +143,11 @@ foreach($d in dir $dir -Directory)
     else 
     {
         Write-Host "push project $($d.Name) " -ForegroundColor DarkYellow
-        git.exe push --progress
+        if($all -and $isMultiBranch) {
+            git.exe push --all --progress
+        } else {
+            git.exe push --progress
+        }
     }
 
     $operationCount++
