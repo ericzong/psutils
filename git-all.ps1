@@ -1,14 +1,16 @@
-#v1.4.0
+#v1.5.0
 <#
 功能：批量操作文件夹下的 Git 库。
 参数：
-  type - Git 操作类型，pull/push，默认 pull。
+  type - Git 操作类型，pull/push/seturl，默认 pull。
   dir - 处理的文件夹。默认为当前工作目录。
   include - 包括的 Git 库文件夹模式。
   exclude - 排除的 Git 库文件夹模式。
   inFile - 包括的 Git 库列表文件。
   exFile - 排除的 Git 库列表文件。
-  all - 是否操作所有分支。
+  all - 是否操作所有分支。仅 type 为 pull/push 时有效。
+  replace - 替换远程仓库 URL。仅 type 为 seturl 时有效。
+
 输出：批量操作的结果输出。
 依赖：git
 示例：
@@ -18,11 +20,12 @@
   git-all -include test.* -exclude pro.*
   git-all -inFile path\to\include-file.txt -exFile path\to\exclude-file.txt
   git-all push
+  git-all seturl -replace old_url_pattern, replace_string
 #>
 [CmdletBinding()]
 param(
     [Parameter(Position=0)]
-    [ValidateSet('pull', 'push')]
+    [ValidateSet('pull', 'push', 'seturl')]
     [string]$type="pull",
     [Parameter(Position=1)]
     [string]$dir=".",
@@ -30,7 +33,8 @@ param(
     [string[]]$exclude = @(),
     [string]$inFile,
     [string]$exFile,
-    [switch]$all
+    [switch]$all,
+    [string[]]$replace
 )
 
 function matchArray([string]$name, [string[]]$array)
@@ -140,7 +144,7 @@ foreach($d in dir $dir -Directory)
             $changeCount++
         }
     } 
-    else 
+    elseif($type -eq 'push')
     {
         Write-Host "push project $($d.Name) " -ForegroundColor DarkYellow
         if($all -and $isMultiBranch) {
@@ -149,6 +153,14 @@ foreach($d in dir $dir -Directory)
             git.exe push --progress
         }
     }
+    else
+    {
+        $oldUrl = (git remote get-url --all origin)
+        $newUrl = $oldUrl -replace $replace
+        Write-Host "set url project $($d.Name): $oldUrl -> $newUrl "
+        git.exe remote set-url origin $newUrl
+    }
+
 
     $operationCount++
 }
