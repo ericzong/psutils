@@ -1,29 +1,9 @@
-#v1.5.0
-<#
-功能：批量操作文件夹下的 Git 库。
-参数：
-  type - Git 操作类型，pull/push/seturl，默认 pull。
-  dir - 处理的文件夹。默认为当前工作目录。
-  include - 包括的 Git 库文件夹模式。
-  exclude - 排除的 Git 库文件夹模式。
-  inFile - 包括的 Git 库列表文件。
-  exFile - 排除的 Git 库列表文件。
-  all - 是否操作所有分支。仅 type 为 pull/push 时有效。
-  replace - 替换远程仓库 URL。仅 type 为 seturl 时有效。
+#v1.6.0
 
-输出：批量操作的结果输出。
-依赖：git
-示例：
-  git-all
-  git-all push
-  git-all pull parent\of\git\dirs
-  git-all -include test.* -exclude pro.*
-  git-all -inFile path\to\include-file.txt -exFile path\to\exclude-file.txt
-  git-all push
-  git-all seturl -replace old_url_pattern, replace_string
-#>
-[CmdletBinding()]
+[CmdletBinding(DefaultParameterSetName="help")]
 param(
+    [Parameter(ParameterSetName="help")]
+    [switch]$help,
     [Parameter(Position=0)]
     [ValidateSet('pull', 'push', 'seturl')]
     [string]$type="pull",
@@ -37,6 +17,41 @@ param(
     [string[]]$replace
 )
 
+# 不传参提示帮助命令
+if($args.Length + $PSBoundParameters.Count -eq 0)
+{
+    Write-Host -ForegroundColor Red "git-all -help 查看帮助"
+    return
+}
+
+# 帮助命令，输出帮助提示
+if($help)
+{
+    Write-Host @"
+功能：
+    本命令用以批量执行某些git命令，以操作指定根目录下所有/部分git库文件夹。
+参数：
+    * type    ：执行何种git操作，目前包括：pull(*), push, seturl。
+    * dir     ：指定根目录，默认为当前工作目录。
+    * include ：包括的git库文件夹模式。
+    * exclude ：排除的git库文件夹模式。
+    * inFile  ：包括的git库列表文件。
+    * exFile  ：排除的git库列表文件。
+    * all     ：是否操作所有分支，仅type=pull|push时有效。
+    * replace ：替换远程仓库URL，仅type=seturl时有效。
+示例：
+    git-all push
+    git-all pull parent\of\git\dirs
+    git-all -include test.* -exclude pro.*
+    git-all -inFile path\to\include-file.txt -exFile path\to\exclude-file.txt
+    git-all seturl -replace old_url_pattern, replace_string
+"@
+    return
+}
+
+# 判断指定字符串是否与模式数组中任一匹配
+# name：匹配字符串
+# array：模式数组
 function matchArray([string]$name, [string[]]$array)
 {
     foreach($i in $array)
@@ -46,8 +61,14 @@ function matchArray([string]$name, [string[]]$array)
             return $true
         }
     }
+
+    return $false
 }
 
+# 判断指定字符串是否被匹配包含，包含与否由包含模式数组与排除模式数组共同确定，排除优先
+# name：匹配字符串
+# include：包含模式数组
+# exclude：排除模式数组
 function isInclude([string]$name, [string[]]$include, [string[]]$exclude) 
 {
     if($exclude -and (matchArray $name $exclude))
@@ -63,6 +84,7 @@ function isInclude([string]$name, [string[]]$include, [string[]]$exclude)
     return $true
 }
 
+# 判断git库是否有分支
 function hasBranches()
 {
     $count = (git branch).count
