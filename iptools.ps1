@@ -7,9 +7,18 @@ function getGitHubIp {
 }
 
 function overrideHosts {
-    $hostsText = Get-Content C:\Windows\System32\drivers\etc\hosts
+    $hostsPath = 'C:\Windows\System32\drivers\etc\hosts'
+    $hostsText = Get-Content $hostsPath
     $hosts = $hostsText -split '\r\n'
+
+
+
     foreach($line in $hosts) {
-        Write-Host $line
+        # Out-Host $line
+        if(($line -match "^#") -or ($line -eq "")) {
+            Out-File -FilePath E:/hosts.txt -Append -InputObject $line
+        } else {
+            $ipDomain = ($line -split "\t")
+        }
     }
 }
