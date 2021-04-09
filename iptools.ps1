@@ -1,8 +1,8 @@
-function getGitHubIp 
+function Get-GitHub-Ip 
 {
     $html = Invoke-WebRequest -URI https://github.com.ipaddress.com/
     $pattern = '(?<=<ul class="comma-separated"><li>)(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'
-    $ip = [regex]::matches($html, $pattern).groups[0].value
+    $ip = [regex]::matches($html, $pattern).groups[1].value
 
     return $ip
 }
@@ -13,31 +13,11 @@ Function Edit-Hosts
     ipconfig /flushdns | Out-Null
 }
 
-function overrideHosts 
+function GitHub-Hosts
 {
-    $gitHubIp = getGitHubIp
+    $gitHubIp = Get-GitHub-Ip 
     $githubConfig = "$gitHubIp`tgithub.com"
 
-    $hostsPath = 'C:\Windows\System32\drivers\etc\hosts'
-    $hostsText = Get-Content $hostsPath
-    $hostsText = ($hostsText -replace "$githubConfig",'')
-    $hosts = $hostsText -split '`r`n'
-
-    $outString = ""
-    $firstConfig = $True
-    foreach($line in $hosts) {
-        if(($line -match "^#") -or ($line -eq "")) {
-            $outString += "$line`r`n"
-        } else {
-            if($firstConfig) {
-                $firstConfig = $False
-                $outString += "$githubConfig`r`n"
-            }
-            
-            $outString += "$line`r`n"
-        }
-    }
-
-    Set-Clipboard $outString
+    Set-Clipboard $githubConfig
     Edit-Hosts
 }
