@@ -36,7 +36,7 @@ foreach($file in dir $cacheDir -File)
         continue
     }
 
-    $currentAppArray=$file.BaseName.Split("#_")
+    $currentAppArray=$file.BaseName.Split("#")
     $currentAppName=$currentAppArray[0]
     $currentAppVer=$currentAppArray[1]
     if($currentAppName -eq $preAppName) {
