@@ -17,29 +17,29 @@ param(
     [string[]]$replace
 )
 
-# ²»´«²ÎÌáÊ¾°ïÖúÃüÁî
+# ä¸ä¼ å‚æç¤ºå¸®åŠ©å‘½ä»¤
 if($args.Length + $PSBoundParameters.Count -eq 0)
 {
-    Write-Host -ForegroundColor Red "git-all -help ²é¿´°ïÖú"
+    Write-Host -ForegroundColor Red "git-all -help æŸ¥çœ‹å¸®åŠ©"
     return
 }
 
-# °ïÖúÃüÁî£¬Êä³ö°ïÖúÌáÊ¾
+# å¸®åŠ©å‘½ä»¤ï¼Œè¾“å‡ºå¸®åŠ©æç¤º
 if($help)
 {
     Write-Host @"
-¹¦ÄÜ£º
-    ±¾ÃüÁîÓÃÒÔÅúÁ¿Ö´ĞĞÄ³Ğ©gitÃüÁî£¬ÒÔ²Ù×÷Ö¸¶¨¸ùÄ¿Â¼ÏÂËùÓĞ/²¿·Ögit¿âÎÄ¼ş¼Ğ¡£
-²ÎÊı£º
-    * type    £ºÖ´ĞĞºÎÖÖgit²Ù×÷£¬Ä¿Ç°°üÀ¨£ºpull(*), push, seturl¡£
-    * dir     £ºÖ¸¶¨¸ùÄ¿Â¼£¬Ä¬ÈÏÎªµ±Ç°¹¤×÷Ä¿Â¼¡£
-    * include £º°üÀ¨µÄgit¿âÎÄ¼ş¼ĞÄ£Ê½¡£
-    * exclude £ºÅÅ³ıµÄgit¿âÎÄ¼ş¼ĞÄ£Ê½¡£
-    * inFile  £º°üÀ¨µÄgit¿âÁĞ±íÎÄ¼ş¡£
-    * exFile  £ºÅÅ³ıµÄgit¿âÁĞ±íÎÄ¼ş¡£
-    * all     £ºÊÇ·ñ²Ù×÷ËùÓĞ·ÖÖ§£¬½ötype=pull|pushÊ±ÓĞĞ§¡£
-    * replace £ºÌæ»»Ô¶³Ì²Ö¿âURL£¬½ötype=seturlÊ±ÓĞĞ§¡£
-Ê¾Àı£º
+åŠŸèƒ½ï¼š
+    æœ¬å‘½ä»¤ç”¨ä»¥æ‰¹é‡æ‰§è¡ŒæŸäº›gitå‘½ä»¤ï¼Œä»¥æ“ä½œæŒ‡å®šæ ¹ç›®å½•ä¸‹æ‰€æœ‰/éƒ¨åˆ†gitåº“æ–‡ä»¶å¤¹ã€‚
+å‚æ•°ï¼š
+    * type    ï¼šæ‰§è¡Œä½•ç§gitæ“ä½œï¼Œç›®å‰åŒ…æ‹¬ï¼špull(*), push, seturlã€‚
+    * dir     ï¼šæŒ‡å®šæ ¹ç›®å½•ï¼Œé»˜è®¤ä¸ºå½“å‰å·¥ä½œç›®å½•ã€‚
+    * include ï¼šåŒ…æ‹¬çš„gitåº“æ–‡ä»¶å¤¹æ¨¡å¼ã€‚
+    * exclude ï¼šæ’é™¤çš„gitåº“æ–‡ä»¶å¤¹æ¨¡å¼ã€‚
+    * inFile  ï¼šåŒ…æ‹¬çš„gitåº“åˆ—è¡¨æ–‡ä»¶ã€‚
+    * exFile  ï¼šæ’é™¤çš„gitåº“åˆ—è¡¨æ–‡ä»¶ã€‚
+    * all     ï¼šæ˜¯å¦æ“ä½œæ‰€æœ‰åˆ†æ”¯ï¼Œä»…type=pull|pushæ—¶æœ‰æ•ˆã€‚
+    * replace ï¼šæ›¿æ¢è¿œç¨‹ä»“åº“URLï¼Œä»…type=seturlæ—¶æœ‰æ•ˆã€‚
+ç¤ºä¾‹ï¼š
     git-all push
     git-all pull parent\of\git\dirs
     git-all -include test.* -exclude pro.*
@@ -49,9 +49,9 @@ if($help)
     return
 }
 
-# ÅĞ¶ÏÖ¸¶¨×Ö·û´®ÊÇ·ñÓëÄ£Ê½Êı×éÖĞÈÎÒ»Æ¥Åä
-# name£ºÆ¥Åä×Ö·û´®
-# array£ºÄ£Ê½Êı×é
+# åˆ¤æ–­æŒ‡å®šå­—ç¬¦ä¸²æ˜¯å¦ä¸æ¨¡å¼æ•°ç»„ä¸­ä»»ä¸€åŒ¹é…
+# nameï¼šåŒ¹é…å­—ç¬¦ä¸²
+# arrayï¼šæ¨¡å¼æ•°ç»„
 function matchArray([string]$name, [string[]]$array)
 {
     foreach($i in $array)
@@ -65,10 +65,10 @@ function matchArray([string]$name, [string[]]$array)
     return $false
 }
 
-# ÅĞ¶ÏÖ¸¶¨×Ö·û´®ÊÇ·ñ±»Æ¥Åä°üº¬£¬°üº¬Óë·ñÓÉ°üº¬Ä£Ê½Êı×éÓëÅÅ³ıÄ£Ê½Êı×é¹²Í¬È·¶¨£¬ÅÅ³ıÓÅÏÈ
-# name£ºÆ¥Åä×Ö·û´®
-# include£º°üº¬Ä£Ê½Êı×é
-# exclude£ºÅÅ³ıÄ£Ê½Êı×é
+# åˆ¤æ–­æŒ‡å®šå­—ç¬¦ä¸²æ˜¯å¦è¢«åŒ¹é…åŒ…å«ï¼ŒåŒ…å«ä¸å¦ç”±åŒ…å«æ¨¡å¼æ•°ç»„ä¸æ’é™¤æ¨¡å¼æ•°ç»„å…±åŒç¡®å®šï¼Œæ’é™¤ä¼˜å…ˆ
+# nameï¼šåŒ¹é…å­—ç¬¦ä¸²
+# includeï¼šåŒ…å«æ¨¡å¼æ•°ç»„
+# excludeï¼šæ’é™¤æ¨¡å¼æ•°ç»„
 function isInclude([string]$name, [string[]]$include, [string[]]$exclude) 
 {
     if($exclude -and (matchArray $name $exclude))
@@ -84,7 +84,7 @@ function isInclude([string]$name, [string[]]$include, [string[]]$exclude)
     return $true
 }
 
-# ÅĞ¶Ïgit¿âÊÇ·ñÓĞ·ÖÖ§
+# åˆ¤æ–­gitåº“æ˜¯å¦æœ‰åˆ†æ”¯
 function hasBranches()
 {
     $count = (git branch).count
@@ -121,7 +121,7 @@ $changeCount=0
 $errorCount=0
 foreach($d in dir $dir -Directory)
 {
- 
+	Write-Host -ForegroundColor Green $d
     if(-not (Test-Path (Join-Path $d.FullName ".git")))
     {
         Write-Verbose ("Skip non-git project $($d.Name)...")
