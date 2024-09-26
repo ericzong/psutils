@@ -8,23 +8,23 @@ param(
     [string]$dir="."
 )
 
-# ²»´«²ÎÌáÊ¾°ïÖúÃüÁî
+# ä¸ä¼ å‚æç¤ºå¸®åŠ©å‘½ä»¤
 if($args.Length + $PSBoundParameters.Count -eq 0)
 {
     $scriptPath = $MyInvocation.MyCommand.Path
     $scriptBasename = [System.IO.Path]::GetFileNameWithoutExtension($scriptPath)
 
-    Write-Host -ForegroundColor Red "$scriptBasename -help ²é¿´°ïÖú"
+    Write-Host -ForegroundColor Red "$scriptBasename -help æŸ¥çœ‹å¸®åŠ©"
     return
 }
 
-# °ïÖúÃüÁî£¬Êä³ö°ïÖúÌáÊ¾
+# å¸®åŠ©å‘½ä»¤ï¼Œè¾“å‡ºå¸®åŠ©æç¤º
 if($help)
 {
     Write-Host @"
-¹¦ÄÜ£ºÅúÁ¿´´½¨¸è´ÊÎÄ¼ş¡£
-ÃèÊö£ºÎªÖ¸¶¨Ä¿Â¼ÏÂµÄ .mp3 ÎÄ¼ş´´½¨¶ÔÓ¦ .lrc ¸è´ÊÎÄ¼ş¡£
-    * dir     £ºÖ¸¶¨´¦ÀíÄ¿Â¼£¬Ä¬ÈÏÎªµ±Ç°¹¤×÷Ä¿Â¼¡£
+åŠŸèƒ½ï¼šæ‰¹é‡åˆ›å»ºæ­Œè¯æ–‡ä»¶ã€‚
+æè¿°ï¼šä¸ºæŒ‡å®šç›®å½•ä¸‹çš„ .mp3 æ–‡ä»¶åˆ›å»ºå¯¹åº” .lrc æ­Œè¯æ–‡ä»¶ã€‚
+    * dir     ï¼šæŒ‡å®šå¤„ç†ç›®å½•ï¼Œé»˜è®¤ä¸ºå½“å‰å·¥ä½œç›®å½•ã€‚
 "@
     return
 }
@@ -33,7 +33,7 @@ if($help)
 $isExist = (Test-Path $dir)
 if(-not $isExist)
 {
-    Write-Host -ForegroundColor Red "Ö¸¶¨µÄÄ¿Â¼²»´æÔÚ£º$dir"
+    Write-Host -ForegroundColor Red "æŒ‡å®šçš„ç›®å½•ä¸å­˜åœ¨ï¼š$dir"
 }
 
 Push-Location
@@ -47,11 +47,11 @@ Get-ChildItem $dir -File -Filter *.mp3 | ForEach-Object `
     if($needCreat)
     {
         Set-Content -Path "$basename.lrc" -Value "[00:00.00]"
-        Write-Host -ForegroundColor Green "$lrcFilename ÒÑ´´½¨"
+        Write-Host -ForegroundColor Green "$lrcFilename å·²åˆ›å»º"
     }
     else
     {
-        Write-Host -ForegroundColor DarkYellow "$lrcFilename ÒÑ´æÔÚ£¬Ìø¹ı´´½¨..."
+        Write-Host -ForegroundColor DarkYellow "$lrcFilename å·²å­˜åœ¨ï¼Œè·³è¿‡åˆ›å»º..."
     }
 }
 
