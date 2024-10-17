@@ -10,23 +10,23 @@ param(
     [string]$outputFile
 )
 
-# ²»´«²ÎÌáÊ¾°ïÖúÃüÁî
+# ä¸ä¼ å‚æç¤ºå¸®åŠ©å‘½ä»¤
 if($args.Length + $PSBoundParameters.Count -eq 0)
 {
     $scriptPath = $MyInvocation.MyCommand.Path
     $scriptBasename = [System.IO.Path]::GetFileNameWithoutExtension($scriptPath)
 
-    Write-Host -ForegroundColor Red "$scriptBasename -help ²é¿´°ïÖú"
+    Write-Host -ForegroundColor Red "$scriptBasename -help æŸ¥çœ‹å¸®åŠ©"
     return
 }
 
-# °ïÖúÃüÁî£¬Êä³ö°ïÖúÌáÊ¾
+# å¸®åŠ©å‘½ä»¤ï¼Œè¾“å‡ºå¸®åŠ©æç¤º
 if($help)
 {
     Write-Host @"
-¹¦ÄÜ£ºÒÆ³ıÖ¸¶¨ .lrc ¸è´ÊÎÄ¼şÖĞµÄÍ¬²½±êÇ©¡£
-    * inputFile     £ºÊäÈëÎÄ¼ş
-    * outputFile    £ºÊä³öÎÄ¼ş
+åŠŸèƒ½ï¼šç§»é™¤æŒ‡å®š .lrc æ­Œè¯æ–‡ä»¶ä¸­çš„åŒæ­¥æ ‡ç­¾ã€‚
+    * inputFile     ï¼šè¾“å…¥æ–‡ä»¶
+    * outputFile    ï¼šè¾“å‡ºæ–‡ä»¶
 "@
     return
 }
@@ -34,11 +34,11 @@ if($help)
 $isExist = (Test-Path $inputFile)
 if(-not $isExist)
 {
-    Write-Host -ForegroundColor Red "Ö¸¶¨µÄÊäÈëÎÄ¼ş²»´æÔÚ£º$inputFile"
+    Write-Host -ForegroundColor Red "æŒ‡å®šçš„è¾“å…¥æ–‡ä»¶ä¸å­˜åœ¨ï¼š$inputFile"
 	return
 }
 
-# ÕıÔò±í´ïÊ½£¬ÓÃÓÚÆ¥ÅäÊ±¼ä±êÇ©ĞĞ
+# æ­£åˆ™è¡¨è¾¾å¼ï¼Œç”¨äºåŒ¹é…æ—¶é—´æ ‡ç­¾è¡Œ
 $timeTagPattern = '<\d{2}:\d{2}\.\d{2}>'
 
 $lines = Get-Content -Path $InputFile
