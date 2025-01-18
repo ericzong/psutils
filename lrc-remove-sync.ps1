@@ -6,7 +6,7 @@ param(
     [switch]$help,
     [Parameter(ParameterSetName="std", Position=0, Mandatory=$true)]
     [string]$inputFile,
-    [Parameter(ParameterSetName="std", Position=1, Mandatory=$true)]
+    [Parameter(ParameterSetName="std")]
     [string]$outputFile
 )
 
@@ -36,6 +36,13 @@ if(-not $isExist)
 {
     Write-Host -ForegroundColor Red "指定的输入文件不存在：$inputFile"
 	return
+}
+
+if(-not $outputFile)
+{
+	$outputExtension = [System.IO.Path]::GetExtension($inputFile)
+	$outputFilePrefix = [System.IO.Path]::GetFileNameWithoutExtension($inputFile)
+	$outputFile = $outputFilePrefix + '-un' + $outputExtension
 }
 
 # 正则表达式，用于匹配时间标签行
