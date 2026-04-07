@@ -1,10 +1,17 @@
-#v1.0.4
+#v1.1.0
 <#
 .SYNOPSIS
 Scoop cache clear tool.
 .DESCRIPTION
 Clear scoop caches without lastest version.
+.PARAMETER CleanPersist
+If specified, also remove orphan directories in the persist folder
+(i.e. apps that are no longer installed).
 #>
+param(
+    [Alias('p')]
+    [switch]$CleanPersist
+)
 if([String]::IsNullOrEmpty($env:SCOOP))
 {
     Write-Error 'There is no $env:SCOOP.'
@@ -66,4 +73,29 @@ foreach($file in dir $cacheDir -File)
 
 if(!$hasChange) {
     Write-Host "No change" -ForegroundColor Green
+}
+
+# ----- clean persist dir (-p) -----
+if($CleanPersist) {
+    $persistDir = Join-Path $env:SCOOP persist
+    $appsDir    = Join-Path $env:SCOOP apps
+
+    if(!(Test-Path $persistDir -PathType Container)) {
+        Write-Warning "Persist dir[$persistDir] not exist, skip."
+    } elseif(!(Test-Path $appsDir -PathType Container)) {
+        Write-Warning "Apps dir[$appsDir] not exist, skip persist clean."
+    } else {
+        $persistHasChange = $false
+        foreach($persistItem in Get-ChildItem $persistDir -Directory) {
+            $appPath = Join-Path $appsDir $persistItem.Name
+            if(!(Test-Path $appPath -PathType Container)) {
+                Remove-Item $persistItem.FullName -Recurse -Force
+                Write-Host "[persist] $($persistItem.Name) deleted (app not installed)" -ForegroundColor Yellow
+                $persistHasChange = $true
+            }
+        }
+        if(!$persistHasChange) {
+            Write-Host "Persist: no orphan dirs found" -ForegroundColor Green
+        }
+    }
 }
